@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    environment: 
+      MYSQL_ROOT_PASSWORD: test 
+      MYSQL_USER: zs
+      MYSQL_PASS: zs
+      LANG: "C.UTF-8"
+    restart: always
+    volumes: 
+      - "./data/db:/var/lib/mysql"  
+      - "./data/conf/my.cnf:/etc/mysql/my.cnf"
+    ports:
+      - 3306:3306
+

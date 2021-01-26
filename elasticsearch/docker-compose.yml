@@ -1,0 +1,75 @@
+version: "3.0"
+services:
+  es-master:
+    container_name: es-master
+    image: elasticsearch:6.4.0
+    restart: always
+    volumes:
+      - ./plugins:/usr/share/elasticsearch/plugins
+      - ./master-data:/usr/share/elasticsearch/data
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - transport.publish_host=es-master  # change `es-master` to host ip
+      - transport.tcp.port=9300
+      - "discovery.zen.ping.unicast.hosts=es-data:9301" # change `es-data` to host ip
+#      - node.attr.box_type=hot # 在Hot节点打tag
+      - discovery.zen.minimum_master_nodes=1
+
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - es
+
+  es-data:
+    container_name: es-data
+    image: elasticsearch:6.4.0
+    restart: always
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - transport.publish_host=es-data  # change `es-data` to host ip
+      - transport.tcp.port=9301
+      - node.master=false
+      - node.data=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # 默认内存
+      - "discovery.zen.ping.unicast.hosts=es-master:9300" # change `es-master` to host ip
+      - discovery.zen.minimum_master_nodes=1
+    #      - node.attr.box_type=cold # cold节点
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9201:9200
+      - 9301:9301
+    volumes:
+      - ./plugins:/usr/share/elasticsearch/plugins
+      - ./data:/usr/share/elasticsearch/data
+    networks:
+      - es
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:6.4.0
+    restart: always
+    ports:
+      - 5601:5601
+    networks:
+      - es
+    volumes:
+      - ./conf/kibana.yml:/usr/share/kibana/config/kibana.yml
+
+networks:
+  es:
+    driver: bridge
