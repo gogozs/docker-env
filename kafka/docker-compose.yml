@@ -7,7 +7,8 @@ services:
       - "9092:9092"
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.110.125 # need to be replaced with host ip 替换为宿主机IP
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.31.236 # need to be replaced with host ip 替换为宿主机IP
+      advertised.listeners: PLAINTEXT://192.168.31.236:9092
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # 容器内可以执行docker ps、docker port等命令
     restart: always
