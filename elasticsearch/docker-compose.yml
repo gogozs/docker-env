@@ -3,6 +3,7 @@ services:
   es-master:
     container_name: es-master
     image: elasticsearch:6.4.0
+    platform: linux/x86_64
     restart: always
     volumes:
       - ./plugins:/usr/share/elasticsearch/plugins
@@ -32,6 +33,7 @@ services:
   es-data:
     container_name: es-data
     image: elasticsearch:6.4.0
+    platform: linux/x86_64
     restart: always
     environment:
       - cluster.name=docker-cluster
@@ -61,6 +63,7 @@ services:
 
   kibana:
     container_name: kibana
+    platform: linux/x86_64
     image: docker.elastic.co/kibana/kibana:6.4.0
     restart: always
     ports:

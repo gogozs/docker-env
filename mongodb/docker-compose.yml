@@ -1,6 +1,7 @@
 services:
   mongodb:
     image: mongo:4.2.3-bionic
+    platform: linux/x86_64
     container_name: mongodb
     ports:
       - 27017:27017

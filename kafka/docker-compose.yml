@@ -2,6 +2,7 @@ version: '3'
 services:
   kafka:
     container_name: kafka
+    platform: linux/x86_64
     image: wurstmeister/kafka:2.13-2.6.0
     ports:
       - "9092:9092"
